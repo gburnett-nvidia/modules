@@ -1,0 +1,124 @@
+name: "parabricks_giraffe"
+description: NVIDIA Clara Parabricks GPU-accelerated VG Giraffe short-read
+  mapper for pangenome graphs. Maps paired-end or single-end FASTQ reads to a
+  pangenome graph index (GBZ + distance + minimizer files), producing a sorted
+  BAM file.
+keywords:
+  - parabricks
+  - giraffe
+  - graph alignment
+  - pangenome
+  - gpu
+  - short-read mapping
+tools:
+  - "parabricks":
+      description: "NVIDIA Clara Parabricks GPU-accelerated genomics tools"
+      homepage: "https://www.nvidia.com/en-us/clara/genomics/"
+      documentation: "https://docs.nvidia.com/clara/parabricks/latest/index.html"
+      licence:
+        - "custom"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - reads:
+        type: file
+        description: Input FASTQ read file(s). A list with one file for single-end
+          reads or two files [R1, R2] for paired-end reads.
+        pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1930"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference genome information
+          e.g. [ id:'genome' ]
+    - fasta:
+        type: file
+        description: Reference genome FASTA file - must be unzipped.
+        pattern: "*.{fasta,fa}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1929"
+    - fai:
+        type: file
+        description: Index (.fai) corresponding to the reference FASTA file.
+        pattern: "*.fai"
+        ontologies: []
+  - gbz_file:
+      type: file
+      description: Pangenome graph file in GBZ format.
+      pattern: "*.gbz"
+      ontologies: []
+  - dist_file:
+      type: file
+      description: Distance index for the pangenome graph.
+      pattern: "*.dist"
+      ontologies: []
+  - minimizer_file:
+      type: file
+      description: Minimizer index for the pangenome graph.
+      pattern: "*.min"
+      ontologies: []
+  - hapl_file:
+      type: file
+      description: Optional haplotype file for the pangenome graph. Pass [] if
+        unused.
+      pattern: "*.hapl"
+      ontologies: []
+  - ri_file:
+      type: file
+      description: Optional r-index file for the pangenome graph. Pass [] if
+        unused.
+      pattern: "*.ri"
+      ontologies: []
+output:
+  bam:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - ${prefix}.bam:
+          type: file
+          description: Sorted BAM file produced by pbrun giraffe.
+          pattern: "*.bam"
+          ontologies: []
+  bai:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - ${prefix}.bam.bai:
+          type: file
+          description: BAI index corresponding to the sorted BAM file. Optional.
+          pattern: "*.bam.bai"
+          ontologies: []
+  versions_parabricks:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - parabricks:
+          type: string
+          description: The tool name
+      - "pbrun version | grep -m1 '^pbrun:' | sed 's/^pbrun:[[:space:]]*//'":
+          type: eval
+          description: The command used to generate the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - parabricks:
+          type: string
+          description: The tool name
+      - "pbrun version | grep -m1 '^pbrun:' | sed 's/^pbrun:[[:space:]]*//'":
+          type: eval
+          description: The command used to generate the version of the tool
+authors:
+  - "@gburnett"
+maintainers:
+  - "@gburnett"

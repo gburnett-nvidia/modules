@@ -1,0 +1,5 @@
+# Parabricks is GPU software distributed as a container only.
+# It is not available on Bioconda or conda-forge.
+# Set conda to null in your Nextflow config when using this module.
+channels: []
+dependencies: []
